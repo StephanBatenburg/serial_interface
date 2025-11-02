@@ -1,8 +1,8 @@
-#Serial interface
+# Serial interface
 
 A program to connect to any serial communication device.
 
-> [!WARNING] Under construction!
+> [!IMPORTANT]
 > This projects is still under development!
 > No garantees that anything works yet!
 
