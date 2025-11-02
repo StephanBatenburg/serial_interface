@@ -46,22 +46,30 @@ int main(){
     std::string input = "";
     std::string placeholder = "Enter message...";
     auto bottomBar = ftxui::Container::Horizontal(
-            {ftxui::Input(&input, &placeholder),
-             ftxui::Button("Send", [&] {/*TODO - add function to send message*/})
+            {ftxui::Input(&input, &placeholder) | ftxui::border,
+             ftxui::Button("Send", [&] {
+                message_history.push_back(input);
+                input = "";
+                chat_history_string = "";
+                if(message_history.size() > 10){
+                    message_history.erase(message_history.begin());
+                }
+                for(auto chat_message: message_history){
+                    chat_history_string += chat_message + "\n";
+                }
+                chat_history_pane = ftxui::paragraph(chat_history_string) | ftxui::size(ftxui::HEIGHT, ftxui::EQUAL, 8) | ftxui::border ;})
             });
 
-    auto topPane = ftxui::Renderer(topBar, [&] {
-        return ftxui::vbox({
-            topBar->Render() | ftxui::flex,
-            chat_history_pane | ftxui::flex,
-            bottomBar->Render() | ftxui::flex
-        }) | ftxui::border;
-    });
-
-    
+    auto topPane = ftxui::Container::Vertical({
+        topBar,
+        ftxui::Renderer([&] {
+            return chat_history_pane;
+        }),
+        bottomBar
+    }) | ftxui::border;
 
     auto composition = ftxui::Container::Vertical({topPane});
     auto screen = ftxui::ScreenInteractive::FitComponent();
-    screen.Clear();
+    system("cls");
     screen.Loop(composition);
 }
